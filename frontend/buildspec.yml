@@ -1,0 +1,22 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - pip install -r requirements.txt
+  pre_build:
+    commands:
+      # Discover and run unit tests. For more information, see <https://docs.pytest.org/en/latest/goodpractices.html>
+      - python setup.py pytest
+
+artifacts:
+  type: zip
+  files:
+    - 'template.yml'
+    - 'scripts/**/*'
+    - 'helloworld/**/*.py'
+    - 'helloworld/templates/*.html'
+    - 'helloworld/static/css/*'
+    - 'appspec.yml'
+    - 'requirements.txt'
+    - 'setup.py'

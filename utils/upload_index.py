@@ -1,6 +1,6 @@
 import boto3
 
-bucket_name = 'midaisukfamilyday2018faceindex'
+bucket_name = 'isdfamilyday2018faceindex'
 
 
 def register(name):

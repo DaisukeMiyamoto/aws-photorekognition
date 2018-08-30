@@ -23,8 +23,7 @@ rekognition = boto3.client('rekognition')
 
 
 def get_exif(img):
-
-    if not img._getexif():
+    if not '_getexif' in dir(img):
         return {'Orientation': 1}
     
     exif = {
@@ -33,6 +32,7 @@ def get_exif(img):
         if k in PIL.ExifTags.TAGS
     }
     return exif
+
 
 def detect_faces(bucket, key):
     response = rekognition.detect_faces(Image={"S3Object": {"Bucket": bucket, "Name": key}})
@@ -48,6 +48,7 @@ def crop_faces(image, detect_faces_response):
         face = image.crop((x, y, x+w, y+h))
         
         stream = io.BytesIO()
+        # face.save(stream)
         face.save(stream,format="JPEG")
         
         image_binary = stream.getvalue()
@@ -57,14 +58,15 @@ def crop_faces(image, detect_faces_response):
         
     return faces_binary_list, cropped_list
 
-def get_name(face_binary):
+def get_name(face_binary, threshold=80):
     name = ''
     try:
         response = rekognition.search_faces_by_image(
             CollectionId=env_collection_name,
             # CollectionId=resource_map[REGION]['CollectionId'],
 #             Image={'S3Object':{'Bucket':bucket,'Name':fileName}}
-            Image={'Bytes':face_binary}
+            Image={'Bytes':face_binary},
+            FaceMatchThreshold=threshold
         )
         for match in response['FaceMatches']:
             face = dynamodb.get_item(
@@ -73,8 +75,9 @@ def get_name(face_binary):
                 Key={'RekognitionId': {'S': match['Face']['FaceId']}}
                 )
             if 'Item' in face:
+                # name = face['Item']['FullName']['S'] + (" (%.1f)" % match['Similarity'])
                 name = face['Item']['FullName']['S']
-                return name
+                return {'text': name, 'confidence': "%.1f" % match['Face']['Confidence'], 'similarity': "%.1f" % match['Similarity']}
             else:
                 name = 'UNKNOWN'
     except ClientError as err:
@@ -89,9 +92,18 @@ def get_name(face_binary):
             name = 'ERR'
 #     return name
 
+
 def rotate(img):
-    exif = get_exif(img)
-    orientation = exif['Orientation']
+    
+    try:
+        exif = get_exif(img)
+        if 'Orientation' in exif:
+            orientation = exif['Orientation']
+        else:
+            orientation = 1
+    except Exception as e:
+        print(e)
+        orientation = 1
 
     if orientation == 6:
         return img.rotate(270, expand=True)
@@ -101,16 +113,22 @@ def rotate(img):
         return img
 
 
-def get_names(bucket, key):
+def get_names(bucket, key, threshold):
     print('detct faces')
     bbs = detect_faces(bucket, key)
     print('route')
     img = Image.open(s3.get_object(Bucket=bucket, Key=key)['Body'])
-    img = rotate(img)
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+    tmp_img = rotate(img)
+    if tmp_img:
+        img = tmp_img
     print('crop')
     faces_binary_list, face_list = crop_faces(img, bbs)
     print('get_names')
-    name_list = [get_name(face_binary) for face_binary in faces_binary_list]
+    
+    name_list = [get_name(face_binary, threshold) for face_binary in faces_binary_list]
+    
     return list(filter(None.__ne__, name_list))
 
 

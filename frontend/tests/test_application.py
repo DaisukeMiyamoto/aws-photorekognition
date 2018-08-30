@@ -20,7 +20,20 @@ def test_response(client):
 def test_index(client):
     response = client.get('/')
     assert response.status_code == 200
-    # assert response.data == '<h1>hello!</h1>'
+
+
+def test_index_pagination(client):
+    response = client.get('/?page=3')
+    assert response.status_code == 200
+
+    response = client.get('/?page_size=5')
+    assert response.status_code == 200
+
+    response = client.get('/?page_size=1&page=4')
+    assert response.status_code == 200
+
+    response = client.get('/?page_size=1&page=4&search=Food')
+    assert response.status_code == 200
 
 
 def test_search_error(client):

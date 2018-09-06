@@ -36,19 +36,19 @@
             <div class="card-body">
               <p class="card-text">
                 <span v-for="tag in item.name_tags">
-                  <a href="#" v-on:click="search_text=tag.text" class="badge badge-pill badge-warning">{{ tag.text }} <span class="debug">{{ tag.confidence }}, {{ tag.similarity }}</span>
+                  <a href="#" v-on:click="search_text=tag.text; pagination.page=0" class="badge badge-pill badge-warning">{{ tag.text }} <span class="debug">{{ tag.confidence }}, {{ tag.similarity }}</span>
                   </a>&nbsp; 
                 </span>
 
                 <span v-for="tag in item.emotion_tags">
-                  <a href="#" v-on:click="search_text=tag.text" class="badge badge-pill badge-success">
+                  <a href="#" v-on:click="search_text=tag.text; pagination.page=0" class="badge badge-pill badge-success">
                     {{ tag.text }}
                     <span class="debug">{{ tag.count }}</span>
                   </a>&nbsp;
                 </span>
                 
                 <span v-for="tag in item.tags">
-                  <a href="#" v-on:click="search_text=tag.text" class="badge badge-pill badge-secondary">
+                  <a href="#" v-on:click="search_text=tag.text; pagination.page=0" class="badge badge-pill badge-secondary">
                     {{ tag.text }}
                     <span class="debug">{{ tag.confidence }}</span>
                   </a>&nbsp;

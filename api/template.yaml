@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+    PhotoManager-API
+
+    SAM Template for PhotoManager-API
+
+
+Globals:
+    Function:
+        Timeout: 3
+
+Parameters:
+    PhotosDynamoDBTableName:
+        Type: String
+        AllowedPattern: '[a-z][a-z0-9]*'
+        Description: Name of Amazon DynamoDB table to hold photo collection
+
+
+Resources:
+
+    PhotoManagerFunction:
+        Type: AWS::Serverless::Function
+        Properties:
+            CodeUri: photomanager_lambda/build/
+            Handler: app.lambda_handler
+            Runtime: python3.6
+            Policies: AmazonDynamoDBReadOnlyAccess
+            Environment:
+                Variables:
+                    PhotosDynamoDBTableName: !Ref PhotosDynamoDBTableName
+            Events:
+                Photos:
+                    Type: Api
+                    Properties:
+                        Path: /photos
+                        Method: get
+
+Outputs:
+
+    ApiEndpoint:
+      Description: "API Gateway endpoint URL for Prod stage"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/photos"
+
+    FunctionName:
+      Description: "Lambda Function ARN"
+      Value: !GetAtt PhotoManagerFunction.Arn
+
+    FunctionIamRole:
+      Description: "Implicit IAM Role created"
+      Value: !GetAtt PhotoManagerFunctionRole.Arn

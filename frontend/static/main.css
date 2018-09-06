@@ -89,3 +89,8 @@ footer {
 footer p {
   margin-bottom: .25rem;
 }
+
+.lb-image {
+  position: relative;
+  z-index: 20;
+}

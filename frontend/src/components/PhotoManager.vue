@@ -4,12 +4,12 @@
     <div class="container">
       <h1 class="jumbotron-heading">AI Photo Search</h1>
       <p class="align-items-center">
-        <form class="form-inline row justify-content-around" method="get">
-          <input class="form-control form-control-lg mb-2 col-12" type="text" placeholder="Input Name or Tag" aria-label="Search" name="search" v-model="search_text">
+        <form @submit.prevent class="form-inline row justify-content-around">
+          <input class="form-control form-control-lg mb-2 col-12" type="text" placeholder="Input Name or Tag" aria-label="Search" name="search" v-model="search_text" v-bind:data="searchTextComputed">
           <!--<button class="btn btn-outline-dark btn-lg mb-2 col-4" type="submit">Search</button>-->
         </form>
       </p>
-      <h3> {{ countComputed }} Photos</h3>
+      <h3> {{ pagination.count }} Photos</h3>
     </div>
   </section>
   
@@ -87,7 +87,7 @@ export default {
     };
   },
   created: function() {
-    this.search('', this.pagination.page, this.pagination.page_size)
+    // this.search('', this.pagination.page, this.pagination.page_size)
   },
   methods: {
     search: function(tag, page, page_size) {
@@ -104,7 +104,6 @@ export default {
           console.dir(self.pagination);
           console.log(self.items.length);
           
-          return
       })
       .catch(function(error) {
           console.log(error);
@@ -112,9 +111,9 @@ export default {
     }
   },
   computed: {
-    countComputed: function(){
+    searchTextComputed: function(){
       this.search(this.search_text, this.pagination.page, this.pagination.page_size);
-      return this.pagination.count
+      return this.search_text
     },
     itemsComputed: function(){
       return this.items;

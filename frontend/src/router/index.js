@@ -14,7 +14,7 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'root',
+      name: 'home',
       component: PhotoManager
     }
   ]

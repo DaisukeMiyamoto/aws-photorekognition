@@ -82,7 +82,26 @@ def event_photos(event, params):
 
 
     items, count = get_imagelist(tag, page, page_size)
-    return items, count
+    if page > 0:
+        previous_page = page - 1
+    else:
+        previous_page = -1
+    
+    if (page+1)*page_size < count:
+        next_page = page + 1
+    else:
+        next_page = -1
+
+    pagination = {
+        'count': count,
+        'previous':previous_page, 
+        'next': next_page,
+        'page_size': page_size,
+        'tag': tag,
+        'page': page
+    }
+
+    return items, pagination
 
 
 def lambda_handler(event, context):
@@ -97,13 +116,13 @@ def lambda_handler(event, context):
     if params is None:
         params = dict()
 
-    items, count = event_photos(event, params)
+    items, pagination = event_photos(event, params)
     
     return {
         'statusCode': 200,
         'headers': headers,
         'body': json.dumps(
-            {'message': 'Photos', 'data': items, 'count': count}
+            {'message': 'Photos', 'data': items, 'pagination': pagination}
         ),
     }
 

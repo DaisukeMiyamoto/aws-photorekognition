@@ -211,6 +211,12 @@ Resources:
     DependsOn:
       - RekognitionLambdaPermission
     Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+    DeletionPolicy: Retain
+    Properties:
       BucketName: !Ref PhotosBucketName
       NotificationConfiguration:
         LambdaConfigurations:
@@ -222,6 +228,23 @@ Resources:
                   - Name: prefix
                     Value: images/originals/
 
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref PhotosBucket
+                - /*
+      Bucket: !Ref PhotosBucket
 
   RekognitionLambdaPermission:
     Type: "AWS::Lambda::Permission"

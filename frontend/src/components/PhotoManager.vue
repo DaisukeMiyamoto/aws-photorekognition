@@ -99,11 +99,12 @@ export default {
           self.items = response.data.data;
           self.pagination.next = response.data.pagination.next;
           self.pagination.previous = response.data.pagination.previous;
+          self.pagination.count = response.data.pagination.count;
           console.dir(self.items);
           console.dir(self.pagination);
           console.log(self.items.length);
           
-          return self.items.length;
+          return
       })
       .catch(function(error) {
           console.log(error);
@@ -112,7 +113,7 @@ export default {
   },
   computed: {
     countComputed: function(){
-      this.pagination.count = this.search(this.search_text, this.pagination.page, this.pagination.page_size);
+      this.search(this.search_text, this.pagination.page, this.pagination.page_size);
       return this.pagination.count
     },
     itemsComputed: function(){

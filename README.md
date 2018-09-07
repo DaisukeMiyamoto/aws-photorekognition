@@ -43,7 +43,7 @@ $ ./deploy.sh
 ## Launch API
 
 ```bash
-cd api
+$ cd api
 ```
 
 - set variables in `deploy.sh`
@@ -61,6 +61,10 @@ $ ./deploy.sh
 ```
 
 ## Copy Vue.js application to S3 bucket
+
+```bash
+$ cd frontend
+```
 
 - set variables in `deploy.sh`
 

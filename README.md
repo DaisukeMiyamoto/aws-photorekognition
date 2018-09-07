@@ -82,3 +82,6 @@ $ ./deploy.sh
 
 https://photomanager.miyamoto.cloud
 
+# Reference
+
+- https://aws.amazon.com/jp/blogs/machine-learning/build-your-own-face-recognition-service-using-amazon-rekognition/

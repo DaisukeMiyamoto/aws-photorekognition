@@ -14,7 +14,7 @@ Photo album application with Amazon Rekognition.
 - Frontend: Amazon S3 (Web Hosting), Vue.js
 
 
-# Usage
+# 
 
 ## Preparation
 
@@ -77,6 +77,20 @@ BUCKET_NAME={SET_UNIQUE_PREFIX_SAME_AS_BACKEND}photos
 ```bash
 $ ./deploy.sh
 ```
+
+# Usage
+
+## Upload Face index
+
+You need to register face index images for face recognition.
+You should upload image to S3 bucket (`${PREFIX}faceindex`) with Metadata.
+
+See `utils/upload_indexface.py`
+
+## Upload photos for Photo Gallery
+
+Just upload photos to S3 bucket (`${PREFIX}photos`)
+
 
 # Demo Page
 
